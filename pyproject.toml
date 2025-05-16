@@ -1,0 +1,19 @@
+[project]
+name = "x__base__x"
+dynamic = ["version"]
+description = "__base__: Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+	"hikari-arc>=2.1.0,<3.0.0",
+	"hikari[speedups]>=2.3.2,<3.0.0",
+	"psutil>=7.0.0,<8",
+	"pydantic>=2.11.4",
+	"tcrutils>=13.1.33",
+
+	"uvloop>=0.20.0 ; sys_platform != 'win32'",
+]
+
+[tool.hatch.version]
+path = "mods/_/_version.py"
+pattern = '__version__(?:: str)? *= *\"(?P<version>[^\"]+)\"'
