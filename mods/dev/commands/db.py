@@ -1,12 +1,30 @@
+from collections.abc import Callable
+
 from _.config import S
 from _.db import GlobalDB, UserDB, VersionDB
 from _.lang import LANG
 from _.tools import OPTION_EPHEMERAL, OPTION_EXISTS_CHECK, OPTION_TO_FILE, dump_respond
 from prelude import *
+from tcrutils.sdb2 import ShelfManager
 
 from ._base import GROUP_DEV
 
 GROUP_DEV_db = GROUP_DEV.include_subgroup(**LANG.get_arc_command("/.dev_db"))
+
+if True:  # autocomplete shit
+
+	def _make_autocomplete(db_type: type[ShelfManager]) -> Callable[[arc.AutocompleteData], list[str]]:
+		def _autocomplete(data: arc.AutocompleteData) -> list[str]:
+			value = data.focused_value
+
+			ids = db_type.keys()
+
+			if value is None:
+				return ids
+			else:
+				return [x for x in ids if x.startswith(str(value))]
+
+		return _autocomplete
 
 
 if True:  # Users
@@ -30,7 +48,7 @@ if True:  # Users
 	@arc.slash_subcommand(**LANG.get_arc_command("/.dev_db_userid"))
 	async def cmd_dev_db_userid(
 		ctx: arc.GatewayContext,
-		user_id: arc.Option[int, arc.IntParams(**LANG.get_arc_command("/.dev_db_userid:user_id"))],
+		user_id: arc.Option[str, arc.StrParams(**LANG.get_arc_command("/.dev_db_userid:user_id"), autocomplete_with=_make_autocomplete(UserDB))],
 		ephemeral: OPTION_EPHEMERAL = True,
 		to_file: OPTION_TO_FILE = True,
 		exists_check: OPTION_EXISTS_CHECK = True,
@@ -58,7 +76,7 @@ if True:  # Versions
 	@arc.slash_subcommand(**LANG.get_arc_command("/.dev_db_version"))
 	async def cmd_dev_db_version(
 		ctx: arc.GatewayContext,
-		version: arc.Option[str, arc.StrParams(**LANG.get_arc_command("/.dev_db_version:version"))],
+		version: arc.Option[str, arc.StrParams(**LANG.get_arc_command("/.dev_db_version:version"), autocomplete_with=_make_autocomplete(VersionDB))],
 		ephemeral: OPTION_EPHEMERAL = True,
 		to_file: OPTION_TO_FILE = True,
 		exists_check: OPTION_EXISTS_CHECK = True,

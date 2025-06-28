@@ -10,7 +10,7 @@ from tcrutils.print import fmt_iterable
 from ._base import GROUP_DEV
 
 
-async def autocomplete_profile(data: arc.AutocompleteData) -> list[str]:
+def _autocomplete_dev_profile(data: arc.AutocompleteData) -> list[str]:
 	options_dict = {option.name: option for option in data.options}
 
 	account_option_value = options_dict.get["account"].value if "account" in options_dict else data.interaction.user.id
@@ -27,7 +27,7 @@ async def autocomplete_profile(data: arc.AutocompleteData) -> list[str]:
 async def cmd_dev_profile(
 	ctx: arc.GatewayContext,
 	account: arc.Option[int | None, arc.IntParams("Account ID (default: this account)")] = None,
-	profile_name: arc.Option[str | None, arc.StrParams("Profile ID (default: entire account, not just profile)", name="profile", autocomplete_with=autocomplete_profile)] = None,
+	profile_name: arc.Option[str | None, arc.StrParams("Profile ID (default: entire account, not just profile)", name="profile", autocomplete_with=_autocomplete_dev_profile)] = None,
 	ephemeral: OPTION_EPHEMERAL = True,
 ):
 	account = account if account is not None else ctx.user.id
