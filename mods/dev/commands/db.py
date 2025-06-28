@@ -6,16 +6,16 @@ from prelude import *
 
 from ._base import GROUP_DEV
 
-GROUP_DEV_DUMPDB = GROUP_DEV.include_subgroup(**LANG.get_arc_command("/.dev_dumpdb"))
+GROUP_DEV_db = GROUP_DEV.include_subgroup(**LANG.get_arc_command("/.dev_db"))
 
 
 if True:  # Users
 
-	@GROUP_DEV_DUMPDB.include
-	@arc.slash_subcommand(**LANG.get_arc_command("/.dev_dumpdb_user"))
-	async def cmd_dev_dumpdb_user(
+	@GROUP_DEV_db.include
+	@arc.slash_subcommand(**LANG.get_arc_command("/.dev_db_user"))
+	async def cmd_dev_db_user(
 		ctx: arc.GatewayContext,
-		user: arc.Option[hikari.User, arc.UserParams(**LANG.get_arc_command("/.dev_dumpdb_user:user"))],
+		user: arc.Option[hikari.User, arc.UserParams(**LANG.get_arc_command("/.dev_db_user:user"))],
 		ephemeral: OPTION_EPHEMERAL = True,
 		exists_check: OPTION_EXISTS_CHECK = True,
 		to_file: OPTION_TO_FILE = True,
@@ -26,11 +26,11 @@ if True:  # Users
 		with UserDB(user.id) as dbuser:
 			await dump_respond((user.id, dbuser), ctx=ctx, ephemeral=ephemeral, to_file=to_file)
 
-	@GROUP_DEV_DUMPDB.include
-	@arc.slash_subcommand(**LANG.get_arc_command("/.dev_dumpdb_userid"))
-	async def cmd_dev_dumpdb_userid(
+	@GROUP_DEV_db.include
+	@arc.slash_subcommand(**LANG.get_arc_command("/.dev_db_userid"))
+	async def cmd_dev_db_userid(
 		ctx: arc.GatewayContext,
-		user_id: arc.Option[int, arc.IntParams(**LANG.get_arc_command("/.dev_dumpdb_userid:user_id"))],
+		user_id: arc.Option[int, arc.IntParams(**LANG.get_arc_command("/.dev_db_userid:user_id"))],
 		ephemeral: OPTION_EPHEMERAL = True,
 		to_file: OPTION_TO_FILE = True,
 		exists_check: OPTION_EXISTS_CHECK = True,
@@ -41,9 +41,9 @@ if True:  # Users
 		with UserDB(user_id) as dbuser:
 			await dump_respond((user_id, dbuser), ctx=ctx, ephemeral=ephemeral, to_file=to_file)
 
-	@GROUP_DEV_DUMPDB.include
-	@arc.slash_subcommand(**LANG.get_arc_command("/.dev_dumpdb_users"))
-	async def cmd_dev_dumpdb_users(
+	@GROUP_DEV_db.include
+	@arc.slash_subcommand(**LANG.get_arc_command("/.dev_db_users"))
+	async def cmd_dev_db_users(
 		ctx: arc.GatewayContext,
 		ephemeral: OPTION_EPHEMERAL = True,
 		to_file: OPTION_TO_FILE = True,
@@ -54,11 +54,11 @@ if True:  # Users
 
 if True:  # Versions
 
-	@GROUP_DEV_DUMPDB.include
-	@arc.slash_subcommand(**LANG.get_arc_command("/.dev_dumpdb_version"))
-	async def cmd_dev_dumpdb_version(
+	@GROUP_DEV_db.include
+	@arc.slash_subcommand(**LANG.get_arc_command("/.dev_db_version"))
+	async def cmd_dev_db_version(
 		ctx: arc.GatewayContext,
-		version: arc.Option[str, arc.StrParams(**LANG.get_arc_command("/.dev_dumpdb_version:version"))],
+		version: arc.Option[str, arc.StrParams(**LANG.get_arc_command("/.dev_db_version:version"))],
 		ephemeral: OPTION_EPHEMERAL = True,
 		to_file: OPTION_TO_FILE = True,
 		exists_check: OPTION_EXISTS_CHECK = True,
@@ -69,9 +69,9 @@ if True:  # Versions
 		with VersionDB(version) as dbversion:
 			await dump_respond((version, dbversion), ctx=ctx, ephemeral=ephemeral, to_file=to_file)
 
-	@GROUP_DEV_DUMPDB.include
-	@arc.slash_subcommand(**LANG.get_arc_command("/.dev_dumpdb_versions"))
-	async def cmd_dev_dumpdb_versions(
+	@GROUP_DEV_db.include
+	@arc.slash_subcommand(**LANG.get_arc_command("/.dev_db_versions"))
+	async def cmd_dev_db_versions(
 		ctx: arc.GatewayContext,
 		ephemeral: OPTION_EPHEMERAL = True,
 		to_file: OPTION_TO_FILE = True,
@@ -82,9 +82,9 @@ if True:  # Versions
 
 if True:  # Global
 
-	@GROUP_DEV_DUMPDB.include
-	@arc.slash_subcommand(**LANG.get_arc_command("/.dev_dumpdb_globals"))
-	async def cmd_dev_dumpdb_globals(
+	@GROUP_DEV_db.include
+	@arc.slash_subcommand(**LANG.get_arc_command("/.dev_db_globals"))
+	async def cmd_dev_db_globals(
 		ctx: arc.GatewayContext,
 		ephemeral: OPTION_EPHEMERAL = True,
 		to_file: OPTION_TO_FILE = True,

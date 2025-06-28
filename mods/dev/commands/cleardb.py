@@ -98,7 +98,7 @@ if True:  # Versions
 		await ctx.respond(f"{S.YES} Done!", flags=ephemeral_from_bool(ephemeral))
 
 	@GROUP_DEV_CLEARDB.include
-	@arc.slash_subcommand(**LANG.get_arc_command("/.dev_dumpdb_versions"))
+	@arc.slash_subcommand(**LANG.get_arc_command("/.dev_cleardb_versions"))
 	async def cmd_dev_cleardb_versions(
 		ctx: arc.GatewayContext,
 		ephemeral: OPTION_EPHEMERAL = True,
