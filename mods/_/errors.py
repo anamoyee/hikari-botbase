@@ -1,13 +1,12 @@
 import traceback
 from dataclasses import dataclass as _dataclass
 
+from common.bot import ACL, BOT, MCL
+from common.errors import ThisError
+from prelude import *
 from tcrutils import discord_ifys as IFYs
 from tcrutils.codeblock import codeblocks
 from tcrutils.extract_error import extract_error, extract_traceback
-
-from common.bot import ACL, BOT
-from common.errors import ThisError
-from prelude import *
 
 from .config import S
 
@@ -41,7 +40,7 @@ class UserGetsDetailsError(ModError):
 		else:
 			base_message = f"**{self.__class__.__name__ if self.display_class_name else 'Error'}!** {self.user_details}"
 
-		return base_message  # Not returning directly, in case of coding in any extra details, like base_message += 'to report this bug...' or whatever
+		return f"{base_message}\nIf you want, you can report this to the bot developer to get this solved (maybe), {S.AUTHOR.get_developer_contact_info()}"  # TODO: find a better way of getting developer info from callstack maybe? Since it does not take into account errors from mods.
 
 
 @ACL.set_error_handler
@@ -65,3 +64,12 @@ async def handle_uncaught_errors(ctx: arc.GatewayContext, e: BaseException) -> N
 	c.error(raw_msg)
 
 	traceback.print_exception(type(e), e, e.__traceback__)
+
+
+async def handle_uncaught_interactions(inter: hikari.ComponentInteraction) -> None:
+	await inter.create_initial_response(hikari.ResponseType.MESSAGE_CREATE, f"{S.NO} This message is too old to be interacted with or there's a bug in the code, try spawning a new one!")
+
+
+if not TESTMODE:  # Will throw a big red application did not respond during testing - intended of course
+	MCL.set_unhandled_component_interaction_hook(handle_uncaught_interactions)
+	MCL.set_unhandled_modal_interaction_hook(handle_uncaught_interactions)

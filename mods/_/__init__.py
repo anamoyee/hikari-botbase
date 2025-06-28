@@ -10,7 +10,7 @@ async def load() -> None:
 
 	...  # Load translations first
 
-	from . import commands, db, models
+	from . import commands, db, hooks, models
 	from . import config as _config
 
 	@ModsLoadedEvent.subscribe

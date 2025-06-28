@@ -1,9 +1,10 @@
 import json
+from functools import partial
 
 import arc
 
 
-def make_loopback_channel_link(ctx: arc.GatewayContext, text: str, *, tip: str | None = None):
+def make_loopback(ctx: arc.GatewayContext, text: str, *, tip: str | None = None):
 	guild_id = ctx.guild_id or "@me"
 	channel_id = ctx.channel_id
 

@@ -5,6 +5,7 @@ import sys
 
 import arc
 import hikari
+import miru
 import pydantic as pd
 from tcrutils.console import c
 from tcrutils.string import get_token

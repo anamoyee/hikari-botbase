@@ -1,1 +1,1 @@
-from . import botstatus
+from . import botstatus, profiles

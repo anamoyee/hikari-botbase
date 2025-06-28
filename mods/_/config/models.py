@@ -13,6 +13,9 @@ if True:  # Author
 		def make_discord_mention(self) -> str:
 			return IFYs.userify(self.discord_id)
 
+		def get_developer_contact_info(self) -> str:
+			return f"{self.make_discord_mention()} (ID: {self.discord_id})"
+
 
 if True:  # CustomEmoji & stuff
 
@@ -22,7 +25,7 @@ if True:  # CustomEmoji & stuff
 		animated: bool
 
 		def __str__(self) -> str:
-			return f"<{'a' if self.animated else ''}:{self.name}:{self.id}>"
+			return IFYs.emojify(self.name, self.id, animated=self.animated)
 
 		@classmethod
 		def into(cls, emoji_str: str) -> Self:
@@ -62,4 +65,14 @@ if True:  # Color Palette
 		# fmt: off
 		COLON:   int = 0xFF8000
 		PRIMARY: int = 0x8000FF  # ROL #$FF8000, #8
+
+		SUCCESS: int = 0x00FF00
+		FAILURE: int = 0xFF0000
+		INFO:    int = 0x0000FF
 		# fmt: on
+
+
+if True:  # File Palette
+
+	class HikariFileStatic(BM):
+		megu_button: hikari.File = hikari.File(ROOT_PATH / "mods/_/assets/megu_button.png")

@@ -5,9 +5,6 @@ from collections.abc import Hashable
 import arc
 from prelude import BM, pd
 
-from ..tools import make_loopback_channel_link
-
-
 class GetByHashSet[T](set[T]):
 	"""A custom set class that allows retrieval of items by their name."""
 

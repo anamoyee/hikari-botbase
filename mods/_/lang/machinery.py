@@ -1,4 +1,5 @@
 from collections.abc import Callable as _Callable
+from collections.abc import Hashable
 from pathlib import Path as _Path
 
 from hikari import Locale as L
@@ -89,7 +90,26 @@ def merge_directory_and_log(lang: _Lang[L, str, str], directory: _Path, c_log: _
 	c_log(f"loaded {(n := merge_directory(lang, directory))} {names[n != 1]}")
 
 
-LANG = _Lang[L, str, str]()
+class HikariLang[LocaleK: Hashable, TranslationK: Hashable, V](_Lang[LocaleK, TranslationK, V]):
+	@staticmethod
+	def try_into_locale(*strs: str, fallback: L | None = None) -> L | None:
+		for s in strs:
+			try:
+				return L(s)
+			except ValueError:
+				pass
+		return fallback
+
+	def get_arc(self, ctx: arc.GatewayContext, key: str) -> V:
+		try:
+			d = self[self.try_into_locale(ctx.locale, ctx.guild_locale, fallback=None)]
+		except KeyError:
+			d = self[None]  # even though user's locale was found, there's no translation for it
+
+		return d[key]
+
+
+LANG = HikariLang[L, str, str]()
 """All loaded language packs, when merging, it overrides any conflicting keys. (x[L][T] <- V => overriden)"""
-POOLS = _Lang[L, str, tuple[str]](merge_func=lambda v1, v2: (*v1, *v2))
+POOLS = HikariLang[L, str, tuple[str]](merge_func=lambda v1, v2: (*v1, *v2))
 """All loaded language pools (language packs where values are tuples of strings), when merging, it merges any conflicting keys, since they're tuples. (x[L][T] <- V => (*previous, *current) - This does not remove duplicates within the tuple though.)"""

@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from tcrutils.decorator import instance as _instance
 
@@ -21,6 +21,9 @@ class S(BM):
 	COLOR: ColorPaletteStatic = {}
 	"""Represents the color palette for the bot."""
 
+	FILE: HikariFileStatic = {}
+	"""Represents the hikari file palette for the bot."""
+
 	### Consts ##############################################################################################################################################################
 
 	NO: str = ":x:"
@@ -36,6 +39,19 @@ class S(BM):
 	DB_DIRECTORY: p.Path = p.Path("~/CC__base__").expanduser()
 	"""The directory where the database is stored."""
 	DB_DIRECTORY.mkdir(parents=True, exist_ok=True)
+
+	MIRU_TIMEOUT: int | float | timedelta | None = 30
+	"""The argument supplied to miru `View`s (and `ext.Menu`s) when asked for a timeout
+
+	- setting this to None will make views never time out automatically
+	- setting this to a float or int will be interpreted as amount of seconds.
+	- this can also be timedelta
+	"""
+
+	### Permissions #########################################################################################################################################################
+
+	PERMISSION_DENIED_ERROR_IS_MEGU_BUTTON_PNG: bool = True
+	"""When sending a message informing the user they should not press someone else's button send /mods/_/assets/megu_button.png instead."""
 
 	### Error Handling ######################################################################################################################################################
 
