@@ -287,8 +287,7 @@ if True:  # Screen
 						.add_field(
 							name="Profile info",
 							value=f"""
-{prof.display_name=}
-{prof.make_md_ident_name()=}
+{prof.make_md_ident_name()}
 """[1:-1],
 							inline=True,
 						),
