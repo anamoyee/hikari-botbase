@@ -1,4 +1,17 @@
 {
 	"editor.insertSpaces": false,
-	"editor.detectIndentation": false
+	"editor.detectIndentation": false,
+	"files.exclude": {
+		"**/__pycache__": true,
+		"**/.mypy_cache": true,
+		"**/.pytest_cache": true,
+		"**/.ruff_cache": true,
+		".venv": true,
+		"uv.lock": true,
+		"run": true,
+		"run.bat": true,
+		".editorconfig": true,
+		".vscode/": true,
+		".rgignore": true
+	}
 }
