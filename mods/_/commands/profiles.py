@@ -361,18 +361,6 @@ Check out [**Zoo**](https://gdcolon.com/zoo/) (<@1008563327380766812>) made by [
 				)
 
 
-async def menu_build_response_async2(menu: Menu, MCL: miru.Client, *screen_stack: Screen):
-	"""Build a partially explored response from a stack of screens.
-
-	A small wrapper around Menu().build_response_async() that reaches into private API since theres no way to do it with public API afaik.
-	"""
-	*inner_screens, topmost_screen = screen_stack
-
-	menu._stack.extend(inner_screens)
-
-	return await menu.build_response_async(MCL, topmost_screen)
-
-
 class ProfilesSlashCmdMenu(OwnedMenu, DisableItemsOnTimeoutMenu, MultipleStartingScreenStackMenu): ...
 
 
