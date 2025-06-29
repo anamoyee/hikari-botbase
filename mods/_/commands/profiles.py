@@ -30,29 +30,13 @@ if True:  # autocomplete
 			return [prof.make_ident_name() for prof in user.profiles if _profile_search_key(str(data.focused_value), prof)]
 
 
-if True:  # utility stuff
+if True:  # errors
 
-	def _profile_id_from_profile_str(profile_str: str) -> ProfileID | None:
-		pat = r"^\s*\[([a-z]+)\]"
-
-		if m := regex.search(pat, profile_str):
-			try:
-				return ProfileID(m.group(1))
-			except ValueError:
-				return None
-
-		try:
-			return ProfileID(profile_str)
-		except ValueError:
-			return None
+	class TooManyProfilesToFitInSelectMenuError(UserGetsDetailsError):
+		"""Too many profiles to fit in select menu (somehow the user has >=26 profiles)."""
 
 
 if True:  # Screen
-	if True:  # errors
-
-		class TooManyProfilesToFitInSelectMenuError(UserGetsDetailsError):
-			"""Too many profiles to fit in select menu (somehow the user has >=26 profiles)."""
-
 	if True:  # ProfilesListScreen
 
 		@enforce_owned_callback
@@ -97,7 +81,7 @@ if True:  # Screen
 				if selected == "+":  # "new profile"
 					await self.menu.push(NewProfileScreen(self.menu, ctx=ctx))
 				else:
-					await self.menu.push(ProfileScreen(self.menu, ctx=ctx, profile_id=_profile_id_from_profile_str(selected)))
+					await self.menu.push(ProfileScreen(self.menu, ctx=ctx, profile_id=ProfileID.try_from_str(selected)))
 
 		class ProfilesListScreen(Screen):
 			prev_ctx: arc.GatewayContext
@@ -379,7 +363,7 @@ async def cmd_profiles(
 			ProfileScreen(
 				menu,
 				ctx=ctx,
-				profile_id=_profile_id_from_profile_str(profile_str),
+				profile_id=ProfileID.try_from_str(profile_str),
 			)
 		)
 

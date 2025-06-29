@@ -1,6 +1,8 @@
 import random as rng
+import re as regex
 from collections.abc import Iterable
 from enum import StrEnum
+from typing import Self
 
 from prelude import *
 
@@ -90,6 +92,27 @@ if True:  # ProfileID
 		@property
 		def emoji(self):
 			return self.__class__._profile_id_to_emoji_lookup[self]
+
+		@classmethod
+		def from_str(cls, profile_str: str) -> Self:
+			"""Parse a string into a ProfileID, raise ValueError if unable."""
+			pat = r"^\s*\[([a-z]+)\]"
+
+			if m := regex.search(pat, profile_str):
+				try:
+					return ProfileID(m.group(1))
+				except ValueError:
+					return None
+
+			return ProfileID(profile_str)
+
+		@classmethod
+		def try_from_str(cls, profile_str: str) -> Self | None:
+			"""Parse a string into a ProfileID, return None if unable."""
+			try:
+				return ProfileID.from_str(profile_str)
+			except ValueError:
+				return None
 
 	ProfileID._profile_id_to_emoji_lookup = {
 		ProfileID._ROBO: "🤖",
