@@ -1,8 +1,8 @@
 import re as regex
 
-from common import ACL, BOT, MCL
+from common import ACL, MCL
 from miru import Modal, ModalContext, ViewContext
-from miru.ext.menu import Menu, Screen, ScreenButton, ScreenContent, ScreenTextSelect
+from miru.ext.menu import Menu, Screen, ScreenContent
 from prelude import *
 
 from ..config import S
@@ -162,7 +162,7 @@ if True:  # Screen
 
 				await self.menu.push(ProfileSwitchedSuccessfulCopycatScreen(self.menu, already_selected=already_selected))
 
-		class DeleteProfileConfirmationModal(miru.Modal):
+		class DeleteProfileConfirmationModal(Modal):
 			def __init__(self, username: str, profile_id: ProfileID, *, view_ctx: ViewContext):
 				self.view_ctx = view_ctx
 				self.profile_id = profile_id
