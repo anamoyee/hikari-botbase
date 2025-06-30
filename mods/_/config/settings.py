@@ -40,7 +40,7 @@ class S(BM):
 	"""The directory where the database is stored."""
 	DB_DIRECTORY.mkdir(parents=True, exist_ok=True)
 
-	MIRU_TIMEOUT: int | float | timedelta | None = 30
+	MIRU_TIMEOUT: int | float | timedelta | None = 60
 	"""The argument supplied to miru `View`s (and `ext.Menu`s) when asked for a timeout
 
 	- setting this to None will make views never time out automatically
