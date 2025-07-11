@@ -1,6 +1,7 @@
 from collections.abc import Callable
 from typing import Self
 
+import hikari
 from hikari import Embed
 from miru.ext.menu import Menu, Screen
 from miru.ext.menu.screen import ScreenContent
@@ -9,7 +10,11 @@ from tcrutils.console import c
 
 class ScreenContent2(ScreenContent):
 	def _fix_embeds(self):
-		self.embeds = [*self.embeds, *((self.embed,) if self.embed else ())]
+		if not self.embed:
+			return
+
+		self.embeds = [*self.embeds, self.embed]
+		self.embed = hikari.UNDEFzINED
 
 	def prepend_embed(self, embed: Embed) -> Self:
 		"""Add an embed to the start of the embeds."""
