@@ -130,21 +130,9 @@ if True:  # Screen
 				sc = await super().build_content()
 
 				if not self.already_selected:
-					return sc.append_embed(
-						hikari.Embed(
-							title="Profile changed!",
-							description="You have successfully switched profiles.",
-							color=S.COLOR.SUCCESS,
-						)
-					)
+					return sc.with_footer(lambda _: f"{S.YES} Successfully switched profiles.")
 				else:
-					return sc.append_embed(
-						hikari.Embed(
-							title="Already on that profile!",
-							description="You are already on that profile.",
-							color=S.COLOR.FAILURE,
-						)
-					)
+					return sc.with_footer(lambda _: f"{S.NO} Already on that profile.")
 
 		@enforce_owned_callback
 		class SwitchToProfileButton(OwnedScreenButton):

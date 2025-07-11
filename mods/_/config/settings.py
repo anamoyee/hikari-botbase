@@ -26,11 +26,11 @@ class S(BM):
 
 	### Consts ##############################################################################################################################################################
 
-	NO: str = ":x:"
+	NO: str = "❌"
 	"""'Something failed or could not be completed or an error occured' emoji/prefix."""
-	YES: str = ":white_check_mark:"
+	YES: str = "✅"
 	"""'Something was completed successfully' emoji/prefix."""
-	WARN: str = ":warning:"
+	WARN: str = "⚠️"
 	"""'No error occured but something went slightly wrong OR nothing happened due to your actions but you are notified of it' emoji/prefix."""
 
 	TZINFO: timezone = datetime.now().astimezone().tzinfo  # By default, the current machine's local timezone

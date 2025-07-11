@@ -12,17 +12,30 @@ class ScreenContent2(ScreenContent):
 		self.embeds = [*self.embeds, *((self.embed,) if self.embed else ())]
 
 	def prepend_embed(self, embed: Embed) -> Self:
+		"""Add an embed to the start of the embeds."""
 		self._fix_embeds()
 		self.embeds = [embed, *self.embeds]
 		return self
 
 	def append_embed(self, embed: Embed) -> Self:
+		"""Add an embed to the end of the embeds."""
 		self._fix_embeds()
 		self.embeds = [*self.embeds, embed]
 		return self
 
 	def with_content(self, content_fn: Callable[[str], str]) -> Self:
+		"""Set the content of the last embed, if no embeds found, raise RuntimeError."""
 		self.content = content_fn(self.content)
+		return self
+
+	def with_footer(self, footer_fn: Callable[[str | None], str]) -> Self:
+		"""Set the footer of the last embed, if no embeds found, raise RuntimeError."""
+		self._fix_embeds()
+
+		if not self.embeds:
+			raise ValueError("Cannot add footer to ScreenContent2 without an embed.")
+
+		self.embeds[-1].set_footer(footer_fn(self.embeds[-1].footer.text if self.embeds[-1].footer is not None else None))
 		return self
 
 
