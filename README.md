@@ -1,3 +1,3 @@
-# __base__
+# hikari-botbase
 
-`ripgrep` for `__base__` to find all replacements you should make after forking
+`ripgrep` for `hikari-botbase` to find all replacements you should make after forking
