@@ -49,3 +49,32 @@ class BM(pd.BaseModel):
 		validate_default=True,
 		validate_assignment=True,
 	)
+
+	def __setstate__(self, state: dict[str]) -> None:
+		state.setdefault("__pydantic_fields_set__", set())
+		state.setdefault("__dict__", {})
+
+		__pydantic_fields_set__: set[str] = {*state["__pydantic_fields_set__"]}
+
+		for field_key, field_info in self.__pydantic_fields__.items():
+			if field_key in __pydantic_fields_set__:
+				continue
+
+			if field_info.is_required():
+				raise RuntimeError(
+					f"{self.__class__.__name__}: Unable to reconstruct outdated object from the database since it does not contain the requied field: {field_key!r} (This field has no default constructor to recover/migrate the value with)"
+				)
+
+			state["__dict__"].setdefault(field_key, field_info.get_default(call_default_factory=True))
+			state["__pydantic_fields_set__"].add(field_key)
+
+		for field_key in __pydantic_fields_set__:
+			if field_key not in self.__pydantic_fields__:
+				get_logger(f"prelude.BM").warning(
+					f"!!! DELETING UNKNOWN FIELD {field_key!r} ON {self.__class__.__name__}. If this was not intended (You did not just remove a field from a class declaration of a class inheriting from BM) THEN RESTORE DATABASE FROM BACKUP AND INVESTIAGE... (ah shit..!) This happened because the database schema does not have this field while the database entry did."
+				)  # Scary!
+
+				state["__dict__"].pop(field_key)
+				state["__pydantic_fields_set__"].remove(field_key)
+
+		return super().__setstate__(state)

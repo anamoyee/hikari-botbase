@@ -1,13 +1,14 @@
 from contextlib import ExitStack
 
+import _ as __
+from _ import db, events, hooks, lang, langtools, models, tools
 from _._version import __version__
 from _.db import GlobalDB, GuildDB, UserDB, VersionDB
 from _.tools import OPTION_EPHEMERAL, ephemeral_from_bool
+from prelude import *
 from tcrutils.codeblock import codeblock, discord_exception
 from tcrutils.console import c
 from tcrutils.print import fmt_iterable
-
-from prelude import *
 
 from ._base import GROUP_DEV
 
@@ -30,7 +31,7 @@ async def cmd_dev_run(
 
 	try:
 		with ExitStack() as stack:
-			d = {}
+			d = locals().copy()
 
 			if open_this_user:
 				d["user"] = stack.enter_context(UserDB(ctx.user.id))

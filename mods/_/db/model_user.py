@@ -6,7 +6,8 @@ from tcrutils.language import apostrophe_s
 
 from ..errors import UserGetsDetailsError
 from ..models import GetByHashSet
-from .model_profile import Profile, ProfileID
+from . import model_profile
+from .model_profile import ProfileID
 
 
 class UnableToEnsureProfileError(UserGetsDetailsError):
@@ -15,10 +16,10 @@ class UnableToEnsureProfileError(UserGetsDetailsError):
 
 class User(BM):
 	selected_profile_id: ProfileID | None = pd.Field(default=None)
-	profiles: GetByHashSet[Profile] = pd.Field(default_factory=GetByHashSet)
+	profiles: GetByHashSet[model_profile.Profile] = pd.Field(default_factory=GetByHashSet)
 
 	@property
-	def selected_profile(self) -> Profile:
+	def selected_profile(self) -> model_profile.Profile:
 		"""Get the currently selected profile for this account as a mutable object to update (or just read).
 
 		Raises RuntimeError if this account does not have any profiles selected (`.has_selected_profile()`).
@@ -31,13 +32,13 @@ class User(BM):
 		"""Whether or not this account has a valid selected profile. This is false only if this account has no profiles or has profiles but by eval/exec it was set to None or a bug in code is present."""
 		return self.selected_profile_id is not None
 
-	def select_profile(self, profile_id: ProfileID | Profile) -> tuple[Profile, bool]:
+	def select_profile(self, profile_id: ProfileID | model_profile.Profile) -> tuple[model_profile.Profile, bool]:
 		"""Change the selected profile in this account to this profile by the Profile object or by the ProfileID enum variant. Return that profile and whether it was NOT necessary to switch (if the profile was already the selected profile) as a 2-el tuple.
 
 		Raises ValueError if the user does not have this profile.
 		"""
 
-		if isinstance(profile_id, Profile):
+		if isinstance(profile_id, model_profile.Profile):
 			profile_id = profile_id.id
 
 		already_this_profile = self.is_selected(profile_id)
@@ -52,7 +53,7 @@ class User(BM):
 
 		return profile, already_this_profile
 
-	def get_profile_by_id(self, profile_id: ProfileID) -> Profile:
+	def get_profile_by_id(self, profile_id: ProfileID) -> model_profile.Profile:
 		"""Return the profile of a given profile_id, raise KeyError if not found on user."""
 		try:
 			return [prof for prof in self.profiles if prof.id == profile_id][0]  # noqa: RUF015
@@ -62,8 +63,8 @@ class User(BM):
 	def has_profile_by_id(self, profile_id: ProfileID) -> bool:
 		return any(prof.id == profile_id for prof in self.profiles)
 
-	def is_selected(self, profile_id: ProfileID | Profile) -> bool:
-		if isinstance(profile_id, Profile):
+	def is_selected(self, profile_id: ProfileID | model_profile.Profile) -> bool:
+		if isinstance(profile_id, model_profile.Profile):
 			profile_id = profile_id.id
 
 		return self.selected_profile_id == profile_id
@@ -73,12 +74,12 @@ class User(BM):
 		*,
 		owner: hikari.SnowflakeishOr[hikari.PartialUser],
 		profile_id: ProfileID | None = None,
-	) -> Profile:
+	) -> model_profile.Profile:
 		"""Create a new Profile with the given ProfileID and a default name, add it to the profiles set and return it. Will raise a ValueError if ran out of profile IDs."""
 		if profile_id is None:
 			profile_id = ProfileID.get_random(p.id for p in self.profiles)
 
-		new_profile = Profile(id=profile_id)
+		new_profile = model_profile.Profile(id=profile_id)
 
 		new_profile.display_name = f"{apostrophe_s(owner.display_name)} Profile"
 
@@ -90,7 +91,7 @@ class User(BM):
 
 		return new_profile
 
-	def ensure_profile(self, ctx: arc.GatewayContext) -> Profile:
+	def ensure_profile(self, ctx: arc.GatewayContext) -> model_profile.Profile:
 		"""Ensure a profile is selected, if not - create one if there are no profiles, if everything went okay return that Profile.
 
 		**!!! If there's at least 1 profile, but none is selected, raise UnableToEnsureProfileError with a bug message to the user**.
@@ -121,6 +122,6 @@ class User(BM):
 			(selected_fn if self.is_selected(prof) else unselected_fn)(prof.make_md_ident_name())
 			for prof in sorted(
 				self.profiles,
-				key=Profile.sort_key,
+				key=model_profile.Profile.sort_key,
 			)
 		)

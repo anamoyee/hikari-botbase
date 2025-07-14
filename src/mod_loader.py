@@ -2,11 +2,10 @@ import re as regex
 from collections import defaultdict, deque
 from collections.abc import Iterable
 
-from tcrutils.import_ import load_package_dynamically
-
 from common.errors import ThisError
 from common.models import Mod
 from prelude import *
+from tcrutils.import_ import load_package_dynamically
 
 MOD_ALLOWED_NAME = r"^[A-Za-z0-9_]+$"
 DEPENDENCIES_FILE_NAME = "dependencies.txt"
@@ -91,7 +90,9 @@ async def load_mods_from_directory(path: p.Path) -> dict[str, Mod]:
 	for item in paths:
 		if not regex.match(MOD_ALLOWED_NAME, item.name.removesuffix(".py")):
 			if not item.name.startswith("#"):  # Intentional comment character
-				logger.warning(f'ignoring mod {item.name!r} since it does not follow the naming schema: r"{MOD_ALLOWED_NAME}". to intentionally temporarily disable this mod, prefix it with #, for example: {("#" + item.name)!r}')
+				logger.warning(
+					f'ignoring mod {item.name!r} since it does not follow the naming schema: r"{MOD_ALLOWED_NAME}". to intentionally temporarily disable this mod, prefix it with #, for example: {("#" + item.name)!r}'
+				)
 			else:
 				logger.info(f"skipping commented mod {item.name!r}")
 			continue
@@ -99,12 +100,11 @@ async def load_mods_from_directory(path: p.Path) -> dict[str, Mod]:
 		mod_name = item.name.removesuffix(".py")
 
 		try:
-			pymodule = load_package_dynamically(item)
+			pymodule = __import__(f"mods.{mod_name}", fromlist=[""])
 
 			sys.modules[mod_name] = pymodule
 
-			if hasattr(pymodule, "load") and callable(pymodule.load):
-				loaded_mod = Mod(pymodule=pymodule, name=mod_name)
+			loaded_mod = Mod(pymodule=pymodule, name=mod_name)
 
 			await pymodule.load()
 

@@ -1,4 +1,5 @@
 import re as regex
+from pyexpat import model
 
 from common import ACL, MCL
 from miru import Modal, ModalContext, ViewContext
@@ -6,7 +7,7 @@ from miru.ext.menu import Menu, Screen, ScreenContent
 from prelude import *
 
 from ..config import S
-from ..db import Profile, ProfileID, UserDB
+from ..db import ProfileID, UserDB, model_profile
 from ..errors import UserGetsDetailsError
 from ..lang import LANG
 from ..tools.loopback_link import make_loopback
@@ -14,7 +15,7 @@ from ..tools.menus import CopycatScreen, DisableItemsOnTimeoutMenu, MultipleStar
 
 if True:  # autocomplete
 
-	def _profile_search_key(key: str, profile: Profile) -> bool:
+	def _profile_search_key(key: str, profile: model_profile.Profile) -> bool:
 		key = key.casefold()
 
 		if key in profile.display_name.casefold():
@@ -41,7 +42,7 @@ if True:  # Screen
 
 		@enforce_owned_callback
 		class ProfileSelect(OwnedScreenTextSelect):
-			def __init__(self, *, profiles: set[Profile], let_create_new_profile: bool = True) -> None:
+			def __init__(self, *, profiles: set[model_profile.Profile], let_create_new_profile: bool = True) -> None:
 				if (n_profiles := len(profiles)) >= 25:
 					let_create_new_profile = False
 
@@ -54,7 +55,7 @@ if True:  # Screen
 								value=prof.id.value,
 								emoji=hikari.UnicodeEmoji(prof.emoji),
 							)
-							for prof in sorted(profiles, key=Profile.sort_key)
+							for prof in sorted(profiles, key=model_profile.Profile.sort_key)
 						],
 						*(
 							(
