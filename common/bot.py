@@ -9,5 +9,10 @@ ACL = arc.GatewayClient(
 		hikari.ApplicationContextType.BOT_DM,
 		hikari.ApplicationContextType.PRIVATE_CHANNEL,
 	],
-)  # , default_enabled_guilds=S.DEFAULT_EANBLED_GUILDS or hikari.UNDEFINED)
+	integration_types=[
+		hikari.ApplicationIntegrationType.GUILD_INSTALL,
+		hikari.ApplicationIntegrationType.USER_INSTALL,
+	],
+	# default_enabled_guilds=S.DEFAULT_EANBLED_GUILDS or hikari.UNDEFINED,
+)
 MCL = miru.Client(BOT)
