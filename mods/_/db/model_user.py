@@ -91,7 +91,7 @@ class User(BM):
 
 		return new_profile
 
-	def ensure_profile(self, ctx: arc.GatewayContext) -> model_profile.Profile:
+	def ensure_profile(self, owner: hikari.User) -> model_profile.Profile:
 		"""Ensure a profile is selected, if not - create one if there are no profiles, if everything went okay return that Profile.
 
 		**!!! If there's at least 1 profile, but none is selected, raise UnableToEnsureProfileError with a bug message to the user**.
@@ -99,7 +99,7 @@ class User(BM):
 		## Usage:
 		```
 		with UserDB(ctx.author.id) as user:
-			profile = await user.ensure_profile(ctx)
+			profile = await user.ensure_profile(ctx.author)
 			# then use profile and not user.selected_profile
 		```
 		"""
@@ -107,7 +107,7 @@ class User(BM):
 			if self.profiles:
 				raise UnableToEnsureProfileError("Huh... it looks like you have profiles, but dont have a profile selected..? Report this as a bug, or try re-selecting with /profiles")
 
-			return self.create_profile(owner=ctx.author)  # This also auto-selects the profile if none are selected already
+			return self.create_profile(owner=owner)  # This also auto-selects the profile if none are selected already
 
 		return self.selected_profile
 

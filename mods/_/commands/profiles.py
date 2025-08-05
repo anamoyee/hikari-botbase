@@ -93,13 +93,13 @@ if True:  # Screen
 				self.prev_ctx = ctx
 
 				with UserDB(ctx.author.id) as user:
-					user.ensure_profile(ctx)
+					user.ensure_profile(ctx.author)
 
 					self.add_item(ProfileSelect(profiles=user.profiles, let_create_new_profile=True))
 
 			async def build_content(self) -> ScreenContent:
 				with UserDB(self.prev_ctx.author.id) as user:
-					user.ensure_profile(self.prev_ctx)
+					user.ensure_profile(self.prev_ctx.author)
 
 					return ScreenContent(
 						embed=hikari.Embed(
