@@ -27,9 +27,13 @@ class UserGetsDetailsError(ModError):
 	display_class_name: bool = True
 	"""When a class inherits from UserGetsDetailsError and is raised: whether to display its name or just 'Error!'. (The details are still displayed)"""
 
-	def __init__(self, /, user_details: str, *, display_class_name: bool = True) -> None:
+	silent: bool = False
+	"""Whether to NOT print the error traceback in the console, only respond to user (functional exception, like when it's entirely user's fault)."""
+
+	def __init__(self, /, user_details: str, *, display_class_name: bool = True, silent: bool = False) -> None:
 		self.user_details = user_details
 		self.display_class_name = display_class_name
+		self.silent = silent
 		super().__init__(user_details)
 
 	def display_to_user(self) -> str:
@@ -49,6 +53,9 @@ async def handle_uncaught_errors(ctx: arc.GatewayContext, e: BaseException) -> N
 		await ctx.respond(e.display_to_user())
 	else:
 		await ctx.respond("**Error!**")  # If the error is not of type UserGetsDetailsError, dont give details.
+
+	if e.silent:
+		return
 
 	if S.ERROR_CHANNEL:
 		msg = f"## Unhandled command error in `{ctx.command.display_name}` triggered by {IFYs.userify(ctx.author.id)}\n" + codeblocks(
